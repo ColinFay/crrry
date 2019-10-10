@@ -9,7 +9,6 @@ Crrry <- R6::R6Class(
       chrome_port = 9222L,
       ...
     ){
-      browser()
       chrome <- crrri::Chrome$new(
         chrome_bin,
         debug_port = chrome_port,
@@ -67,6 +66,6 @@ Crrry <- R6::R6Class(
     Page = NULL,
     Runtime = NULL,
     process = NULL,
-    client = NULL,
+    client = NULL
   )
 )

@@ -2,25 +2,16 @@
 Crrry <- R6::R6Class(
   "Crrry",
   public = list(
+    process = NULL,
     initialize = function(
       chrome_bin = Sys.getenv("HEADLESS_CHROME"),
       fun = "pkgload::load_all();run_app()",
       shiny_port = 2811L,
       chrome_port = 9222L,
+      inspect = TRUE,
       ...
     ){
-      private$chrome <- crrri::Chrome$new(
-        chrome_bin,
-        debug_port = chrome_port,
-        ...
-      )
-      private$client <- crrri::hold(
-        private$chrome$connect()
-      )
-      private$Page <-  private$client$Page
-      private$Runtime <-  private$client$Runtime
-
-      private$process <- processx::process$new(
+      self$process <- processx::process$new(
         "Rscript", c(
           "-e",
           sprintf(
@@ -31,47 +22,92 @@ Crrry <- R6::R6Class(
         )
       )
       attempt::stop_if_not(
-        private$process$is_alive(),
+        self$process$is_alive(),
         msg = "Unable to launch the Shiny App"
       )
+
+      private$chrome <- crrri::Chrome$new(
+        chrome_bin,
+        debug_port = chrome_port,
+        ...
+      )
+      private$client <- crrri::hold(
+        private$chrome$connect()
+      )
+
+      private$Page <-  private$client$Page
+      private$Runtime <-  private$client$Runtime
 
       crrri::hold({
         private$client$Page$navigate(
           url = sprintf(
-            "http://127.0.0.1:2811",
+            "http://127.0.0.1:%s",
             shiny_port
           )
         )
       })
+      #browser()
+      #crrri::hold({
+        private$client$inspect(inspect)
+      #})
 
+      #sleep_while_shiny_busy(private$Runtime)
     },
-    click_on_id = function(on, check = TRUE){
+    call_js = function(code, check = TRUE){
+      crrri::hold({
+        private$Runtime$evaluate(
+          expression = code
+        )
+      })
+      maybe_check(check, private)
+    },
+    click_on_id = function(id, check = TRUE){
       crrri::hold({
         private$Runtime$evaluate(
           expression = sprintf(
             'document.getElementById("%s").click()',
-            on
+            id
           )
         )
       })
-      if (check){
-        sleep_while_shiny_busy(private$Runtime)
+      maybe_check(check, private)
+    },
+    shiny_set_input = function(id, val, check = TRUE){
+      crrri::hold({
+        private$Runtime$evaluate(
+          expression = sprintf(
+            'Shiny.setInputValue("%s", "%s")',
+            id, val
+          )
+        )
+      })
+      maybe_check(check, private)
+    },
+    wait_for_shiny_ready = function(check = TRUE){
+      sleep_while_shiny_busy(private$Runtime)
+      if(check){
         check_still_running(private$Runtime)
       }
     },
     stop = function(){
-      private$process$kill()
+      self$process$kill()
       private$chrome$close()
     },
     is_alive = function(){
-      private$process$is_alive()
+      self$process$is_alive()
     }
   ),
   private = list(
     chrome = NULL,
     Page = NULL,
     Runtime = NULL,
-    process = NULL,
     client = NULL
   )
 )
+
+maybe_check <- function(check, private){
+  if (check){
+    sleep_while_shiny_busy(private$Runtime)
+    check_still_running(private$Runtime)
+  }
+}

@@ -9,18 +9,17 @@ Crrry <- R6::R6Class(
       chrome_port = 9222L,
       ...
     ){
-      chrome <- crrri::Chrome$new(
+      private$chrome <- crrri::Chrome$new(
         chrome_bin,
         debug_port = chrome_port,
         ...
       )
-      Sys.sleep(2)
-      private$client <- chrome$connect(callback = function(client) {
-        #browser()
-        client$inspect(TRUE)
-      })
+      private$client <- crrri::hold(
+        chrome$connect()
+      )
       private$Page <-  private$client$Page
       private$Runtime <-  private$client$Runtime
+
       private$process <- processx::process$new(
         "Rscript", c(
           "-e",
@@ -35,21 +34,26 @@ Crrry <- R6::R6Class(
         private$process$is_alive(),
         msg = "Unable to launch the Shiny App"
       )
-      Sys.sleep(2)
-      private$client$Page$navigate(
-        url = sprintf(
-          "http://127.0.0.1:2811",
-          shiny_port
+
+      crrri::hold({
+        private$client$Page$navigate(
+          url = sprintf(
+            "http://127.0.0.1:2811",
+            shiny_port
           )
         )
+      })
+
     },
-    click = function(on, check = TRUE){
-      private$Runtime$evaluate(
-        expression = sprintf(
-          '$("%s").click()',
-          on
+    click_on_id = function(on, check = TRUE){
+      crrri::hold({
+        private$Runtime$evaluate(
+          expression = sprintf(
+            'document.getElementById("%s").click()',
+            on
+          )
         )
-      )
+      })
       if (check){
         sleep_while_shiny_busy(private$Runtime)
         check_still_running(private$Runtime)
@@ -57,12 +61,14 @@ Crrry <- R6::R6Class(
     },
     stop = function(){
       private$process$kill()
+      private$chrome$close()
     },
     is_alive = function(){
       private$process$is_alive()
     }
   ),
   private = list(
+    chrome = NULL,
     Page = NULL,
     Runtime = NULL,
     process = NULL,

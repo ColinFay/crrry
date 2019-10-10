@@ -15,7 +15,7 @@ Crrry <- R6::R6Class(
         ...
       )
       private$client <- crrri::hold(
-        chrome$connect()
+        private$chrome$connect()
       )
       private$Page <-  private$client$Page
       private$Runtime <-  private$client$Runtime

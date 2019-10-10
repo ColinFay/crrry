@@ -3,11 +3,10 @@ sleep_while_shiny_busy <- function(Runtime, timeout = 1){
   repeat {
     #browser()
     res <- Runtime$evaluate(
-      expression = 'document.getElementsByTagName("html").className == "shiny-busy" && document.getElementById("shiny-disconnected-overlay") == null'
+      expression = '$("html").attr("class").includes("shiny-busy") && document.getElementById("shiny-disconnected-overlay") == null'
     )
     res <- crrri::hold(res)
     if (!is.null(res$result$value) && !res$result$value){
-      print("break")
       break()
     }
     Sys.sleep(timeout)

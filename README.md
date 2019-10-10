@@ -51,7 +51,7 @@ attempt::stop_if_not(
 )
 client$Page$navigate(
   url = sprintf(
-    "http://127.0.0.1:2811",
+    "http://127.0.0.1:%s",
     shiny_port
   )
 )
@@ -81,7 +81,7 @@ plop <- R6::R6Class(
   public = list(
     initialize = function(){
       chrome_bin = pagedown::find_chrome()
-      chrome_port = 12347L
+      chrome_port = 12345L
       shiny_port = 2811
       fun = 'shiny::runExample("01_hello")'
       chrome <- crrri::Chrome$new(
@@ -110,7 +110,7 @@ plop <- R6::R6Class(
       )
       client$Page$navigate(
         url = sprintf(
-          "http://127.0.0.1:2811",
+          "http://127.0.0.1:%s",
           shiny_port
         )
       )
@@ -122,11 +122,11 @@ plop$new()
 ```
 
     Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
-      --no-first-run --headless \
-      '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-nqwzjnqs' \
-      '--remote-debugging-port=12347'
+    --no-first-run --headless \
+    '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-nqwzjnqs' \
+    '--remote-debugging-port=12347'
     Unhandled promise error: invalid state
     <plop>
-      Public:
-        clone: function (deep = FALSE) 
-        initialize: function ()
+    Public:
+    clone: function (deep = FALSE) 
+    initialize: function ()

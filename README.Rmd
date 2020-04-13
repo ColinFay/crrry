@@ -4,13 +4,13 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r remedy01, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%", 
-  eval = FALSE
+  eval = TRUE
 )
 ```
 # crrry
@@ -18,132 +18,182 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of crrry is to ...
+The goal of crrry is to provide some recipes around [`{crrri}`](https://github.com/RLesur/crrri) for manipulating shiny applications from the command line. 
 
 ## Installation
 
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version of `{crrry}` from [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("ColinFay/crrry")
+# install.packages("remotes")
+remotes::install_github("ColinFay/crrry")
 ```
 
-## This works :
+## Starting example
 
-```{r}
-chrome_bin = pagedown::find_chrome()
-chrome_port = 12345L
-shiny_port = 2811
-fun = 'shiny::runExample("01_hello")'
-chrome <- crrri::Chrome$new(
-  chrome_bin,
-  debug_port = chrome_port
+Generate a chrome object connection to a specific app (here, online).
+
+```{r remedy02}
+# install.packages("pagedown")
+# install.packages("httpuv")
+test <- crrry::CrrryOnPage$new(
+  chrome_bin = pagedown::find_chrome(),
+  chrome_port = httpuv::randomPort(),
+  url = "https://connect.thinkr.fr/prenoms/",
+  inspect = FALSE,
+  headless = FALSE
 )
-client <- chrome$connect(callback = function(client) {
-  client$inspect(FALSE)
-})
+```
 
-Page <-  client$Page
-Runtime <-  client$Runtime
-process <- processx::process$new(
-  "Rscript", c(
-    "-e",
-    sprintf(
-      "options(shiny.port = %s);%s",
-      shiny_port, fun
-    ),
-    stderr = "|", stdout = "|"
+Block the process until shiny is ready to continue:
+
+```{r remedy03}
+test$wait_for_shiny_ready()
+```
+
+You can send random JavaScript:
+
+```{r remedy04}
+test$call_js(
+      '$("#mod_popuui-dep").click()'
+    )
+```
+
+Set the value of a shiny input
+
+> Note that this doesn't change the front, only the backend. You won't see the input change with this one, but the reactivity linked to this input changes. 
+
+
+```{r remedy05}
+test$shiny_set_input(
+    "mod_popuui-depchoice", 
+    "59"
   )
+```
+
+Wait for a condition to be true:
+
+```{r remedy06}
+test$wait_for('$("#mod_popuui-depchoice").text() == "01"')
+```
+
+Send some gremlins:
+
+```{r remedy11}
+test$gremlins_horde()
+```
+
+
+Stop the process:
+
+```{r remedy07}
+test$stop()
+```
+
+## Use on a local app
+
+```{r remedy08}
+test <- crrry::CrrryProc$new(
+  chrome_bin = pagedown::find_chrome(),
+  chrome_port = 6697L,
+  fun = "hexmake::run_app()",
+  inspect = FALSE,
+  headless = FALSE
 )
-attempt::stop_if_not(
-  process$is_alive(),
-  msg = "Unable to launch the Shiny App"
-)
-client$Page$navigate(
-  url = sprintf(
-    "http://127.0.0.1:%s",
-    shiny_port
+```
+
+```{r remedy09}
+test$stop()
+```
+
+## Perform a load test 
+
+In combination with `{dockerstats}`
+
+```{r remedy10}
+system("docker run -p 2708:80 --rm --name hexmake colinfay/hexmake", wait = FALSE, ignore.stdout = TRUE)
+Sys.sleep(5)
+library(dockerstats)
+
+unlink("inst/dockerstats.csv")
+
+tests <- list()
+
+n_users <- 4
+
+append_csv <- function(
+  message,
+  i
+){
+  readr::write_csv(
+    append = TRUE,
+    dockerstats::dockerstats("hexmake", extra = sprintf(
+      "%s - %s", message, i
+    )),
+    "inst/dockerstats.csv"
   )
-)
-chrome$close()
-```
+}
 
 
-But not when put into an R6:
-
-```{r}
-pkgload::load_all()
-test <- crrry::Crrry$new(
-  chrome_bin = pagedown::find_chrome(), 
-  chrome_port = 12345L, 
-  fun = 'shiny::runExample("01_hello")'
-)
-```
-
-```
-Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
---no-first-run --headless \
-'--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-aekovtbn' \
-'--remote-debugging-port=12345'
-Unhandled promise error: invalid state
-```
-
-
-```{r}
-plop <- R6::R6Class(
-  "plop", 
-  public = list(
-    initialize = function(){
-      chrome_bin = pagedown::find_chrome()
-      chrome_port = 12345L
-      shiny_port = 2811
-      fun = 'shiny::runExample("01_hello")'
-      chrome <- crrri::Chrome$new(
-        chrome_bin,
-        debug_port = chrome_port
-      )
-      client <- chrome$connect(callback = function(client) {
-        client$inspect(FALSE)
-      })
-      
-      Page <-  client$Page
-      Runtime <-  client$Runtime
-      process <- processx::process$new(
-        "Rscript", c(
-          "-e",
-          sprintf(
-            "options(shiny.port = %s);%s",
-            shiny_port, fun
-          ),
-          stderr = "|", stdout = "|"
-        )
-      )
-      attempt::stop_if_not(
-        process$is_alive(),
-        msg = "Unable to launch the Shiny App"
-      )
-      client$Page$navigate(
-        url = sprintf(
-          "http://127.0.0.1:%s",
-          shiny_port
-        )
-      )
-      chrome$close()
-    }
+for (i in 1:n_users){
+  cli::cat_rule(as.character(i))
+  tests[[i]] <- crrry::CrrryOnPage$new(
+    chrome_bin = pagedown::find_chrome(),
+    chrome_port = httpuv::randomPort(),
+    url = "http://localhost:2708",
+    inspect = FALSE,
+    headless = TRUE
   )
-)
-plop$new()
-```
+  append_csv( "Connection", i)
+}
+
+for (i in 1:n_users){
+  Sys.sleep(0.5)
+  cli::cat_rule(as.character(i))
+  tests[[i]]$call_js('$("summary:contains(\'Name\')").click()')
+  append_csv( "Clicking on Name", i)
+}
+
+for (i in 1:n_users){
+  Sys.sleep(0.5)
+  cli::cat_rule(as.character(i))
+  tests[[i]]$shiny_set_input(
+    "main_ui_1-left_ui_1-pkg_name_ui_1-package", 
+    "pouet"
+  )
+  append_csv( "Changin pkg name", i)
+}
+
+for (i in 1:n_users){
+  Sys.sleep(0.5)
+  cli::cat_rule(as.character(i))
+  tests[[i]]$gremlins_horde()
+  Sys.sleep(5)
+  append_csv( "gremlins", i)
+}
+
+for (i in 1:n_users){
+  Sys.sleep(0.5)
+  cli::cat_rule(as.character(i))
+  tests[[i]]$stop()
+}
+system("docker kill hexmake")
 
 ```
-Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
---no-first-run --headless \
-'--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-nqwzjnqs' \
-'--remote-debugging-port=12347'
-Unhandled promise error: invalid state
-<plop>
-Public:
-clone: function (deep = FALSE) 
-initialize: function () 
+
+Analyse results
+
+```{r README-1}
+df <- readr::read_csv(
+  "inst/dockerstats.csv", 
+  col_names = names(dockerstats::dockerstats())
+  )
+df$MemUsage <- fs::as_fs_bytes(
+  df$MemUsage
+)
+library(ggplot2)
+ggplot() + 
+  geom_line(data = df, aes(x = record_time, y = MemUsage)) + 
+  scale_y_continuous(labels = scales::label_bytes())
 ```
+

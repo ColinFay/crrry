@@ -5,9 +5,13 @@ Authors@R: person('Colin', 'Fay', email = 'colin@thinkr.fr', role = c('cre', 'au
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
+URL: https://github.com/ColinFay/crrry
+BugReports: https://github.com/ColinFay/crrry/issues
 Encoding: UTF-8
 LazyData: true
 Imports: 
     crrri
+Remotes: 
+    rlesur/crrri
 RoxygenNote: 7.1.0
 Roxygen: list(markdown = TRUE)

@@ -33,6 +33,8 @@ remotes::install_github("ColinFay/crrry")
 
 Generate a chrome object connection to a specific app (here, online).
 
+(Note: the `randomPort()` function requires httpuv >= 1.5.2)
+
 ```{r remedy02}
 # install.packages("pagedown")
 # install.packages("httpuv")
@@ -111,11 +113,11 @@ test$stop()
 In combination with `{dockerstats}`
 
 ```{r remedy10}
-system("docker run -p 2708:80 --rm --name hexmake colinfay/hexmake", wait = FALSE, ignore.stdout = TRUE)
+system("docker run -p 2708:80 --rm --name hexmake colinfay/hexmake", wait = FALSE)
 Sys.sleep(5)
 library(dockerstats)
 
-unlink("inst/dockerstats.csv")
+unlink("inst/dockerstatsss.csv")
 
 tests <- list()
 
@@ -130,7 +132,7 @@ append_csv <- function(
     dockerstats::dockerstats("hexmake", extra = sprintf(
       "%s - %s", message, i
     )),
-    "inst/dockerstats.csv"
+    "inst/dockerstatsss.csv"
   )
 }
 
@@ -142,7 +144,7 @@ for (i in 1:n_users){
     chrome_port = httpuv::randomPort(),
     url = "http://localhost:2708",
     inspect = FALSE,
-    headless = TRUE
+    headless = FALSE
   )
   append_csv( "Connection", i)
 }
@@ -185,7 +187,7 @@ Analyse results
 
 ```{r README-1}
 df <- readr::read_csv(
-  "inst/dockerstats.csv", 
+  "inst/dockerstatsss.csv", 
   col_names = names(dockerstats::dockerstats())
   )
 df$MemUsage <- fs::as_fs_bytes(

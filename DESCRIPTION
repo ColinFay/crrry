@@ -10,7 +10,12 @@ BugReports: https://github.com/ColinFay/crrry/issues
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    crrri
+    crrri,
+    R6,
+    cli,
+    processx,
+    attempt,
+    pkgload
 Remotes: 
     rlesur/crrri
 RoxygenNote: 7.1.0

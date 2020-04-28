@@ -42,8 +42,7 @@ test <- crrry::CrrryOnPage$new(
   chrome_bin = pagedown::find_chrome(),
   chrome_port = httpuv::randomPort(),
   url = "https://connect.thinkr.fr/prenoms/",
-  inspect = FALSE,
-  headless = FALSE
+  headless = TRUE
 )
 ```
 
@@ -99,7 +98,6 @@ test <- crrry::CrrryProc$new(
   chrome_bin = pagedown::find_chrome(),
   chrome_port = 6697L,
   fun = "hexmake::run_app()",
-  inspect = FALSE,
   headless = FALSE
 )
 ```
@@ -143,7 +141,6 @@ for (i in 1:n_users){
     chrome_bin = pagedown::find_chrome(),
     chrome_port = httpuv::randomPort(),
     url = "http://localhost:2708",
-    inspect = FALSE,
     headless = FALSE
   )
   append_csv( "Connection", i)

@@ -129,13 +129,13 @@ CrrryOnPage <- R6::R6Class(
     #' @param chrome_bin Path to Chrome binary, passed to `Chrome$new()`
     #' @param url URL where the app is running
     #' @param chrome_port Chrome_port, passed to `Chrome$new()`
-    #' @param inspect Inspect the client? Passed to `Chrome$new()`
+    #' @param headless Run headless? Passed to `Chrome$new()`
     #' @param ... Futher args passed to `Chrome$new()`
     initialize = function(
       chrome_bin = Sys.getenv("HEADLESS_CHROME"),
       chrome_port = 9222L,
       url,
-      inspect = TRUE,
+      headless = TRUE,
       ...
     ){
       private$chrome <- crrri::Chrome$new(
@@ -155,7 +155,6 @@ CrrryOnPage <- R6::R6Class(
           url = url
         )
       })
-      private$client$inspect(inspect)
     },
     #' @description
     #' Stop the process
@@ -186,14 +185,14 @@ CrrryProc <- R6::R6Class(
     #' @param fun A function launching the shiny app
     #' @param shiny_port The port to launch the shiny apps on
     #' @param chrome_port Chrome_port, passed to `Chrome$new()`
-    #' @param inspect Inspect the client? Passed to `Chrome$new()`
+    #' @param headless Run headless? Passed to `Chrome$new()`
     #' @param ... Futher args passed to `Chrome$new()`
     initialize = function(
       chrome_bin = Sys.getenv("HEADLESS_CHROME"),
       fun = "pkgload::load_all();run_app()",
       shiny_port = 2811L,
       chrome_port = 9222L,
-      inspect = TRUE,
+      headless = TRUE,
       ...
     ){
       self$process <- processx::process$new(
@@ -220,6 +219,8 @@ CrrryProc <- R6::R6Class(
         private$chrome$connect()
       )
 
+
+
       private$Page <-  private$client$Page
       private$Runtime <-  private$client$Runtime
 
@@ -231,12 +232,7 @@ CrrryProc <- R6::R6Class(
           )
         )
       })
-      #browser()
-      #crrri::hold({
-      private$client$inspect(inspect)
-      #})
 
-      #sleep_while_shiny_busy(private$Runtime)
     },
     #' @description
     #' Stop the process

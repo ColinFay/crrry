@@ -46,7 +46,7 @@ Wait for a JS condition to be TRUE
   fun = "pkgload::load_all();run_app()",
   shiny_port = 2811L,
   chrome_port = 9222L,
-  inspect = TRUE,
+  headless = TRUE,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -62,7 +62,7 @@ Wait for a JS condition to be TRUE
 
 \item{\code{chrome_port}}{Chrome_port, passed to \code{Chrome$new()}}
 
-\item{\code{inspect}}{Inspect the client? Passed to \code{Chrome$new()}}
+\item{\code{headless}}{Run headless? Passed to \code{Chrome$new()}}
 
 \item{\code{...}}{Futher args passed to \code{Chrome$new()}}
 }

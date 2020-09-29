@@ -12,12 +12,13 @@ CrrryGeneric <- R6::R6Class(
       cli::cat_rule(
         sprintf("Launching JS: %s", code)
       )
-      crrri::hold({
+      res <- crrri::hold({
         private$Runtime$evaluate(
           expression = code
         )
       })
       maybe_check(check, private)
+      invisible(res)
     },
     #' @description
     #' Click on an id
@@ -141,6 +142,7 @@ CrrryOnPage <- R6::R6Class(
       private$chrome <- crrri::Chrome$new(
         chrome_bin,
         debug_port = chrome_port,
+        headless = headless,
         ...
       )
       private$client <- crrri::hold(

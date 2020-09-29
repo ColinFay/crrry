@@ -135,7 +135,7 @@ CrrryOnPage <- R6::R6Class(
       chrome_bin = Sys.getenv("HEADLESS_CHROME"),
       chrome_port = 9222L,
       url,
-      headless = TRUE,
+      headless = headless,
       ...
     ){
       private$chrome <- crrri::Chrome$new(
@@ -213,6 +213,7 @@ CrrryProc <- R6::R6Class(
       private$chrome <- crrri::Chrome$new(
         chrome_bin,
         debug_port = chrome_port,
+        headless = headless,
         ...
       )
       private$client <- crrri::hold(

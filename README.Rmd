@@ -10,7 +10,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%", 
-  eval = TRUE
+  eval = TRUE, 
+  cache = FALSE
 )
 ```
 # crrry
@@ -54,16 +55,22 @@ test$wait_for_shiny_ready()
 
 You can send random JavaScript:
 
-```{r remedy04}
+```{r remedy045}
 test$call_js(
       '$("#mod_popuui-dep").click()'
     )
 ```
 
+`call_js()` returns its value invisibly, but it can be assigned: 
+
+```{r remedy04}
+res <- test$call_js(
+      '$("#mod_popuui-choix").attr("value")'
+    )
+res
+```
+
 Set the value of a shiny input
-
-> Note that this doesn't change the front, only the backend. You won't see the input change with this one, but the reactivity linked to this input changes. 
-
 
 ```{r remedy05}
 test$shiny_set_input(
@@ -71,6 +78,8 @@ test$shiny_set_input(
     "59"
   )
 ```
+
+> Note that this doesn't change the front, only the backend. You won't see the input change with this one, but the reactivity linked to this input changes. 
 
 Wait for a condition to be true:
 

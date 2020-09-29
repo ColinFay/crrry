@@ -38,8 +38,8 @@ test <- crrry::CrrryOnPage$new(
 )
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
 #>   --no-first-run --headless \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-byvacrar' \
-#>   '--remote-debugging-port=43531'
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-tlkqbnsx' \
+#>   '--remote-debugging-port=15933'
 ```
 
 Block the process until shiny is ready to continue:
@@ -56,26 +56,44 @@ You can send random JavaScript:
 test$call_js(
       '$("#mod_popuui-dep").click()'
     )
-#> ── Launching JS: $("#mod_popuui-dep").click() ─────────────────────────────
+#> ── Launching JS: $("#mod_popuui-dep").click() ───────────────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
 ```
 
-Set the value of a shiny input
+`call_js()` returns its value invisibly, but it can be assigned:
 
-> Note that this doesn’t change the front, only the backend. You won’t
-> see the input change with this one, but the reactivity linked to this
-> input changes.
+``` r
+res <- test$call_js(
+      '$("#mod_popuui-choix").attr("value")'
+    )
+#> ── Launching JS: $("#mod_popuui-choix").attr("value") ───────────────────────────────────────
+#> Shiny is computing
+#> ✓ Shiny is still running
+res
+#> $result
+#> $result$type
+#> [1] "string"
+#> 
+#> $result$value
+#> [1] "Colin"
+```
+
+Set the value of a shiny input
 
 ``` r
 test$shiny_set_input(
     "mod_popuui-depchoice", 
     "59"
   )
-#> ── Setting id mod_popuui-depchoice with value 59 ──────────────────────────
+#> ── Setting id mod_popuui-depchoice with value 59 ────────────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
 ```
+
+> Note that this doesn’t change the front, only the backend. You won’t
+> see the input change with this one, but the reactivity linked to this
+> input changes.
 
 Wait for a condition to be true:
 
@@ -89,7 +107,7 @@ Send some gremlins:
 
 ``` r
 test$gremlins_horde()
-#> ── Sending hordes of gremlins ─────────────────────────────────────────────
+#> ── Sending hordes of gremlins ───────────────────────────────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
 ```
@@ -110,8 +128,8 @@ test <- crrry::CrrryProc$new(
   headless = FALSE
 )
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
-#>   --no-first-run --headless \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-kvukfkrx' \
+#>   --no-first-run --new-window \
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-bqjacwgb' \
 #>   '--remote-debugging-port=6697'
 ```
 
@@ -158,26 +176,26 @@ for (i in 1:n_users){
   )
   append_csv( "Connection", i)
 }
-#> ── 1 ──────────────────────────────────────────────────────────────────────
+#> ── 1 ────────────────────────────────────────────────────────────────────────────────────────
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
-#>   --no-first-run --headless \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-nkggyayb' \
-#>   '--remote-debugging-port=2184'
-#> ── 2 ──────────────────────────────────────────────────────────────────────
+#>   --no-first-run --new-window \
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-pvlzfgxh' \
+#>   '--remote-debugging-port=32870'
+#> ── 2 ────────────────────────────────────────────────────────────────────────────────────────
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
-#>   --no-first-run --headless \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-aoswmuao' \
-#>   '--remote-debugging-port=15010'
-#> ── 3 ──────────────────────────────────────────────────────────────────────
+#>   --no-first-run --new-window \
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-kekjpgsi' \
+#>   '--remote-debugging-port=24817'
+#> ── 3 ────────────────────────────────────────────────────────────────────────────────────────
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
-#>   --no-first-run --headless \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-zkofkbhu' \
-#>   '--remote-debugging-port=24641'
-#> ── 4 ──────────────────────────────────────────────────────────────────────
+#>   --no-first-run --new-window \
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-mkdotgtm' \
+#>   '--remote-debugging-port=41618'
+#> ── 4 ────────────────────────────────────────────────────────────────────────────────────────
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
-#>   --no-first-run --headless \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-lvikelao' \
-#>   '--remote-debugging-port=14987'
+#>   --no-first-run --new-window \
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-vtxmzsyn' \
+#>   '--remote-debugging-port=8474'
 
 for (i in 1:n_users){
   Sys.sleep(0.5)
@@ -185,20 +203,20 @@ for (i in 1:n_users){
   tests[[i]]$call_js('$("summary:contains(\'Name\')").click()')
   append_csv( "Clicking on Name", i)
 }
-#> ── 1 ──────────────────────────────────────────────────────────────────────
-#> ── Launching JS: $("summary:contains('Name')").click() ────────────────────
+#> ── 1 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Launching JS: $("summary:contains('Name')").click() ──────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 2 ──────────────────────────────────────────────────────────────────────
-#> ── Launching JS: $("summary:contains('Name')").click() ────────────────────
+#> ── 2 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Launching JS: $("summary:contains('Name')").click() ──────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 3 ──────────────────────────────────────────────────────────────────────
-#> ── Launching JS: $("summary:contains('Name')").click() ────────────────────
+#> ── 3 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Launching JS: $("summary:contains('Name')").click() ──────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 4 ──────────────────────────────────────────────────────────────────────
-#> ── Launching JS: $("summary:contains('Name')").click() ────────────────────
+#> ── 4 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Launching JS: $("summary:contains('Name')").click() ──────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
 
@@ -211,20 +229,20 @@ for (i in 1:n_users){
   )
   append_csv( "Changin pkg name", i)
 }
-#> ── 1 ──────────────────────────────────────────────────────────────────────
-#> ── Setting id main_ui_1-left_ui_1-pkg_name_ui_1-package with value pouet ──
+#> ── 1 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Setting id main_ui_1-left_ui_1-pkg_name_ui_1-package with value pouet ────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 2 ──────────────────────────────────────────────────────────────────────
-#> ── Setting id main_ui_1-left_ui_1-pkg_name_ui_1-package with value pouet ──
+#> ── 2 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Setting id main_ui_1-left_ui_1-pkg_name_ui_1-package with value pouet ────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 3 ──────────────────────────────────────────────────────────────────────
-#> ── Setting id main_ui_1-left_ui_1-pkg_name_ui_1-package with value pouet ──
+#> ── 3 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Setting id main_ui_1-left_ui_1-pkg_name_ui_1-package with value pouet ────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 4 ──────────────────────────────────────────────────────────────────────
-#> ── Setting id main_ui_1-left_ui_1-pkg_name_ui_1-package with value pouet ──
+#> ── 4 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Setting id main_ui_1-left_ui_1-pkg_name_ui_1-package with value pouet ────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
 
@@ -235,20 +253,20 @@ for (i in 1:n_users){
   Sys.sleep(5)
   append_csv( "gremlins", i)
 }
-#> ── 1 ──────────────────────────────────────────────────────────────────────
-#> ── Sending hordes of gremlins ─────────────────────────────────────────────
+#> ── 1 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Sending hordes of gremlins ───────────────────────────────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 2 ──────────────────────────────────────────────────────────────────────
-#> ── Sending hordes of gremlins ─────────────────────────────────────────────
+#> ── 2 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Sending hordes of gremlins ───────────────────────────────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 3 ──────────────────────────────────────────────────────────────────────
-#> ── Sending hordes of gremlins ─────────────────────────────────────────────
+#> ── 3 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Sending hordes of gremlins ───────────────────────────────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
-#> ── 4 ──────────────────────────────────────────────────────────────────────
-#> ── Sending hordes of gremlins ─────────────────────────────────────────────
+#> ── 4 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── Sending hordes of gremlins ───────────────────────────────────────────────────────────────
 #> Shiny is computing
 #> ✓ Shiny is still running
 
@@ -257,10 +275,10 @@ for (i in 1:n_users){
   cli::cat_rule(as.character(i))
   tests[[i]]$stop()
 }
-#> ── 1 ──────────────────────────────────────────────────────────────────────
-#> ── 2 ──────────────────────────────────────────────────────────────────────
-#> ── 3 ──────────────────────────────────────────────────────────────────────
-#> ── 4 ──────────────────────────────────────────────────────────────────────
+#> ── 1 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── 2 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── 3 ────────────────────────────────────────────────────────────────────────────────────────
+#> ── 4 ────────────────────────────────────────────────────────────────────────────────────────
 system("docker kill hexmake")
 ```
 
@@ -271,7 +289,6 @@ df <- readr::read_csv(
   "inst/dockerstatsss.csv", 
   col_names = names(dockerstats::dockerstats())
   )
-#> Unable to find any container running.
 #> Parsed with column specification:
 #> cols(
 #>   Container = col_character(),

@@ -182,6 +182,22 @@ CrrryProc <- R6::R6Class(
   inherit = CrrryGeneric,
   public = list(
     #' @description
+    #' Get the process stdout
+    stdout = function(){
+      cat(
+        readLines(private$stdout_),
+        sep = "\n"
+      )
+    },
+    #' @description
+    #' Get the process stderr
+    stderr = function(){
+      cat(
+        readLines(private$stderr_),
+        sep = "\n"
+      )
+    },
+    #' @description
     #' Wait for a JS condition to be TRUE
     #' @param chrome_bin Path to Chrome binary, passed to `Chrome$new()`
     #' @param fun A function launching the shiny app
@@ -197,16 +213,22 @@ CrrryProc <- R6::R6Class(
       headless = TRUE,
       ...
     ){
+      #browser()
+      private$stdout_ <- tempfile()
+      private$stderr_ <- tempfile()
+
       self$process <- processx::process$new(
         "Rscript", c(
           "-e",
           sprintf(
-            "options(shiny.port = %s);%s",
+            "options(shiny.port = %s, shiny.launch.browser = invisible);%s",
             shiny_port, fun
-          ),
-          stderr = "|", stdout = "|"
-        )
+          )
+        ),
+        stderr  = private$stderr_,
+        stdout  = private$stdout_
       )
+
       attempt::stop_if_not(
         self$process$is_alive(),
         msg = "Unable to launch the Shiny App"
@@ -248,5 +270,8 @@ CrrryProc <- R6::R6Class(
     is_alive = function(){
       self$process$is_alive()
     }
+  ), private = list(
+    stdout_ = character(0),
+    stderr_ = character(0)
   )
 )

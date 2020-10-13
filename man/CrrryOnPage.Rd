@@ -45,8 +45,7 @@ Create a Chrome object that connect to an URL with a Shiny App
   chrome_bin = Sys.getenv("HEADLESS_CHROME"),
   chrome_port = 9222L,
   url,
-  inspect = TRUE,
-  headless = TRUE,
+  headless = headless,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -59,8 +58,6 @@ Create a Chrome object that connect to an URL with a Shiny App
 \item{\code{chrome_port}}{Chrome_port, passed to \code{Chrome$new()}}
 
 \item{\code{url}}{URL where the app is running}
-
-\item{\code{inspect}}{Inspect the client? Passed to \code{Chrome$new()}}
 
 \item{\code{headless}}{Run headless? Passed to \code{Chrome$new()}}
 

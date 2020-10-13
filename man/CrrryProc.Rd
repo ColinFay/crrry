@@ -17,6 +17,8 @@ Launch a crrrry on a local process
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-stdout}{\code{CrrryProc$stdout()}}
+\item \href{#method-stderr}{\code{CrrryProc$stderr()}}
 \item \href{#method-new}{\code{CrrryProc$new()}}
 \item \href{#method-stop}{\code{CrrryProc$stop()}}
 \item \href{#method-is_alive}{\code{CrrryProc$is_alive()}}
@@ -34,6 +36,26 @@ Launch a crrrry on a local process
 \item \out{<span class="pkg-link" data-pkg="crrry" data-topic="CrrryGeneric" data-id="wait_for_shiny_ready">}\href{../../crrry/html/CrrryGeneric.html#method-wait_for_shiny_ready}{\code{crrry::CrrryGeneric$wait_for_shiny_ready()}}\out{</span>}
 }
 \out{</details>}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-stdout"></a>}}
+\if{latex}{\out{\hypertarget{method-stdout}{}}}
+\subsection{Method \code{stdout()}}{
+Get the process stdout
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CrrryProc$stdout()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-stderr"></a>}}
+\if{latex}{\out{\hypertarget{method-stderr}{}}}
+\subsection{Method \code{stderr()}}{
+Get the process stderr
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CrrryProc$stderr()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}

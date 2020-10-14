@@ -105,10 +105,17 @@ test$stop()
 
 ```{r remedy08}
 test <- crrry::CrrryProc$new(
+  # find the chrome binary
   chrome_bin = pagedown::find_chrome(),
+  # Set chrome on a random port
   chrome_port = httpuv::randomPort(),
+  # Set shiny on a random port
   shiny_port = httpuv::randomPort(),
+  # The code to launch the shiny app
   fun = "hexmake::run_app()",
+  # optional code to launch before `fun`
+  pre_launch_cmd = "whereami::set_whereami_log('~/Desktop')",
+  # Should Chrome be launched headless?
   headless = FALSE
 )
 ```
@@ -119,6 +126,10 @@ To get the output of the process, run `$stdout()` and `$stderr()`
 test$wait_for_shiny_ready()
 test$stderr()
 test$stdout()
+```
+
+```{r}
+jsonlite::fromJSON("~/Desktop/whereami.json")
 ```
 
 

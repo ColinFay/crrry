@@ -69,6 +69,7 @@ Wait for a JS condition to be TRUE
   shiny_port = 2811L,
   chrome_port = 9222L,
   headless = TRUE,
+  pre_launch_cmd = "",
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -85,6 +86,8 @@ Wait for a JS condition to be TRUE
 \item{\code{chrome_port}}{Chrome_port, passed to \code{Chrome$new()}}
 
 \item{\code{headless}}{Run headless? Passed to \code{Chrome$new()}}
+
+\item{\code{pre_launch_cmd}}{Code to launch before \code{fun}.}
 
 \item{\code{...}}{Futher args passed to \code{Chrome$new()}}
 }

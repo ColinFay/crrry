@@ -204,6 +204,7 @@ CrrryProc <- R6::R6Class(
     #' @param shiny_port The port to launch the shiny apps on
     #' @param chrome_port Chrome_port, passed to `Chrome$new()`
     #' @param headless Run headless? Passed to `Chrome$new()`
+    #' @param pre_launch_cmd Code to launch before `fun`.
     #' @param ... Futher args passed to `Chrome$new()`
     initialize = function(
       chrome_bin = Sys.getenv("HEADLESS_CHROME"),
@@ -211,18 +212,25 @@ CrrryProc <- R6::R6Class(
       shiny_port = 2811L,
       chrome_port = 9222L,
       headless = TRUE,
+      pre_launch_cmd = "",
       ...
     ){
       #browser()
       private$stdout_ <- tempfile()
       private$stderr_ <- tempfile()
 
+      attempt::stop_if(
+        pre_launch_cmd,
+        is.null,
+        'pre_launch_cmd can not be NULL. If you want it empty, use `""` (the default).'
+      )
+
       self$process <- processx::process$new(
         "Rscript", c(
           "-e",
           sprintf(
-            "options(shiny.port = %s, shiny.launch.browser = invisible);%s",
-            shiny_port, fun
+            "options(shiny.port = %s, shiny.launch.browser = invisible);%s;%s",
+            shiny_port, pre_launch_cmd, fun
           )
         ),
         stderr  = private$stderr_,

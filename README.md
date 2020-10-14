@@ -38,8 +38,8 @@ test <- crrry::CrrryOnPage$new(
 )
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
 #>   --no-first-run --headless \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-cwsnzygj' \
-#>   '--remote-debugging-port=24771'
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-ahkcszbz' \
+#>   '--remote-debugging-port=18669'
 ```
 
 Block the process until shiny is ready to continue:
@@ -122,16 +122,23 @@ test$stop()
 
 ``` r
 test <- crrry::CrrryProc$new(
+  # find the chrome binary
   chrome_bin = pagedown::find_chrome(),
+  # Set chrome on a random port
   chrome_port = httpuv::randomPort(),
+  # Set shiny on a random port
   shiny_port = httpuv::randomPort(),
+  # The code to launch the shiny app
   fun = "hexmake::run_app()",
+  # optional code to launch before `fun`
+  pre_launch_cmd = "whereami::set_whereami_log('~/Desktop')",
+  # Should Chrome be launched headless?
   headless = FALSE
 )
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
 #>   --no-first-run --new-window \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-zkdcieak' \
-#>   '--remote-debugging-port=6892'
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-jmjwkfib' \
+#>   '--remote-debugging-port=40865'
 ```
 
 To get the output of the process, run `$stdout()` and `$stderr()`
@@ -144,13 +151,32 @@ test$stderr()
 #> Loading required package: shiny
 #> Warning: package ‘shiny’ was built under R version 3.6.2
 #> 
-#> Listening on http://127.0.0.1:25035
+#> Listening on http://127.0.0.1:11974
 #> Warning: The renderImage output named 'main_ui_1-right_ui_1-img' is missing the deleteFile argument; as of Shiny 1.5.0, you must use deleteFile=TRUE or deleteFile=FALSE. (This warning will become an error in a future version of Shiny.)
 test$stdout()
 #> ── Running server(...) at app_server.R#5 (1) ───────────────────────────
 #> ── Running observeEventHandler(...) at mod_manip_image.R#341 (1) ───────
 #> ── Running observeEventHandler(...) at mod_rendering.R#74 (1) ──────────
 #> ── Running renderImage(...) at mod_right.R#39 (1) ──────────────────────
+```
+
+``` r
+jsonlite::fromJSON("~/Desktop/whereami.json")
+#>   tag                 where
+#> 1            app_server.R#5
+#> 2     mod_manip_image.R#341
+#> 3        mod_rendering.R#74
+#> 4            mod_right.R#39
+#>                                                          path
+#> 1 /Users/colin/Seafile/documents_colin/R/opensource/hexmake/R
+#> 2 /Users/colin/Seafile/documents_colin/R/opensource/hexmake/R
+#> 3 /Users/colin/Seafile/documents_colin/R/opensource/hexmake/R
+#> 4 /Users/colin/Seafile/documents_colin/R/opensource/hexmake/R
+#>                  when count
+#> 1 2020-10-14 09:06:19     1
+#> 2 2020-10-14 09:06:20     1
+#> 3 2020-10-14 09:06:20     1
+#> 4 2020-10-14 09:06:20     1
 ```
 
 ``` r
@@ -199,23 +225,23 @@ for (i in 1:n_users){
 #> ── 1 ───────────────────────────────────────────────────────────────────
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
 #>   --no-first-run --new-window \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-vevzobex' \
-#>   '--remote-debugging-port=34391'
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-yavdbbdz' \
+#>   '--remote-debugging-port=33636'
 #> ── 2 ───────────────────────────────────────────────────────────────────
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
 #>   --no-first-run --new-window \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-xwskdijg' \
-#>   '--remote-debugging-port=1516'
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-rssafsgx' \
+#>   '--remote-debugging-port=7631'
 #> ── 3 ───────────────────────────────────────────────────────────────────
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
 #>   --no-first-run --new-window \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-kzfsahwu' \
-#>   '--remote-debugging-port=41389'
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-vtwpvnof' \
+#>   '--remote-debugging-port=17858'
 #> ── 4 ───────────────────────────────────────────────────────────────────
 #> Running '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' \
 #>   --no-first-run --new-window \
-#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-bfpzcgnm' \
-#>   '--remote-debugging-port=21495'
+#>   '--user-data-dir=/Users/colin/Library/Application Support/r-crrri/chrome-data-dir-lehxgytx' \
+#>   '--remote-debugging-port=41803'
 
 for (i in 1:n_users){
   Sys.sleep(0.5)
